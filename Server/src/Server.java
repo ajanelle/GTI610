@@ -24,7 +24,7 @@ public class Server {
             input = new BufferedReader((new InputStreamReader(clientSocket.getInputStream())));
             
             while ((text = input.readLine()) != null) {
-                output.println(text);
+                System.out.println(text);
            }
             
         } catch (IOException ex) {
