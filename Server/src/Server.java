@@ -19,7 +19,6 @@ public class Server {
             serverSocket = new ServerSocket(9999);
             clientSocket = serverSocket.accept();
             
-
             output = new PrintWriter(clientSocket.getOutputStream(),true);
             input = new BufferedReader((new InputStreamReader(clientSocket.getInputStream())));
 

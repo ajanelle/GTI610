@@ -13,8 +13,8 @@ public class ServeurDNS {
 		
 		System.out.println("--------------------------------------");
 		System.out.println("Ecole de Technologie Superieures (ETS)");
-		System.out.println("GTI610 - Réseau de télécommunication");
-		System.out.println("      Serveur DNS simplifié");
+		System.out.println("GTI610 - Rï¿½seau de tï¿½lï¿½communication");
+		System.out.println("      Serveur DNS simplifiï¿½");
 		System.out.println("--------------------------------------");
 		
 		if (args.length == 0) {
@@ -28,17 +28,17 @@ public class ServeurDNS {
 		
 		UDPReceiver UDPR = new UDPReceiver();
 		File f = null;	
-		UDPR.setport(53);
+		UDPR.setport(9999);
 		
-		/* cas où l'argument = default
-		 Le serveur DNS de redirection est celui de l'école "10.162.8.51" 
-		         ====> attention, si vous travaillez ailleurs, pensez à le mettre à jour
+		/* cas oï¿½ l'argument = default
+		 Le serveur DNS de redirection est celui de l'ï¿½cole "10.162.8.51" 
+		         ====> attention, si vous travaillez ailleurs, pensez ï¿½ le mettre ï¿½ jour
 		 Le cache dns est le fichier: "DNSFILE.TXT"
-		 et la redirection est par defaut à "false" 
+		 et la redirection est par defaut ï¿½ "false" 
 		*/
 		if(args[0].equals("default")){
 			if (args.length <= 1) {
-				UDPR.setSERVER_DNS("192.168.1.1");//************************A changer si on est sur la machine de l'école*****************
+				UDPR.setSERVER_DNS("192.168.1.1");//************************A changer si on est sur la machine de l'ï¿½cole*****************
 				f = new File("DNSFILE.TXT");
 				if(f.exists()){
 					UDPR.setDNSFile("DNSFILE.TXT");
@@ -57,11 +57,11 @@ public class ServeurDNS {
 				UDPR.start();
 			}
 			else{
-				System.out.print("L'éxécution par défaut n'a pas d'autres arguments");
+				System.out.print("L'ï¿½xï¿½cution par dï¿½faut n'a pas d'autres arguments");
 			}
 		}
 		else{
-			if(args[0].equals("showtable")){ // cas où l'argument = showtable cacheDNS
+			if(args[0].equals("showtable")){ // cas oï¿½ l'argument = showtable cacheDNS
 				if (args.length == 2) {
 					f = new File(args[1]);
 					if(f.exists()){
@@ -83,7 +83,7 @@ public class ServeurDNS {
 				}
 			}
 			else{
-				if (args.length == 3) { // cas où les arguments sont: [IPserveurDNS] [cacheDNS] [redirectionOuNon]
+				if (args.length == 3) { // cas oï¿½ les arguments sont: [IPserveurDNS] [cacheDNS] [redirectionOuNon]
 					UDPR.setSERVER_DNS(args[0]);
 					f = new File(args[1]);
 					if(f.exists()){
