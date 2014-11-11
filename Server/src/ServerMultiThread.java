@@ -1,54 +1,57 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 
-public class ServerMultiThread implements Runnable {
+public class ServerMultiThread {
 	
-	private static Socket clientSocket;
-	
-	public ServerMultiThread(Socket socket){
-		this.clientSocket = socket;
-	}
-
 	public static void main(String[] args) {
 		ServerSocket serverSocket;
-		
-		BufferedReader input;
-	    PrintWriter output;
-		String text;
-		
         try {
             serverSocket = new ServerSocket(9999);
             while (true) {
-                clientSocket = serverSocket.accept();
-                System.out.println("Connected");
-                new Thread(new ServerMultiThread(clientSocket)).start();
+                new Thread(new serverInstance(serverSocket.accept())).start();
              }
             
         } catch (IOException ex) {
         	System.err.println(ex.getMessage());
         }
 	}
-	
-	public void run() {
-	      try {
-	         PrintStream pstream = new PrintStream
-	         (clientSocket.getOutputStream());
-	         for (int i = 100; i >= 0; i--) {
-	            pstream.println(i + 
-	            " bottles of beer on the wall");
-	         }
-	         pstream.close();
-	         clientSocket.close();
-	      }
-	      catch (IOException e) {
-	         System.out.println(e);
-	      }
-	   }
 
+	public static class serverInstance implements Runnable {
+	
+		private Socket clientSocket;
+		
+		public serverInstance(Socket socket){
+			this.clientSocket = socket;
+		}
+		
+		public void run() {
+		      try {
+		    	BufferedReader input;
+		    	PrintWriter output;
+				
+		  		String message;
+		        input = new BufferedReader((new InputStreamReader(clientSocket.getInputStream())));
+		        
+		        message = input.readLine();
+		        
+		        System.out.println(message + " recu de : " + clientSocket.getRemoteSocketAddress());
+		        
+		        output = new PrintWriter(clientSocket.getOutputStream(), true);
+		        output.println(message.toUpperCase());
+		        
+		        clientSocket.close();
+		        
+		      }
+		      catch (IOException e) {
+		        System.out.println(e);
+		      }
+		   }
+	
+	}
 }
+
