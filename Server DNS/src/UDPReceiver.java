@@ -5,6 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketAddress;
 
+import message.Answer;
 import message.Message;
 
 /**
@@ -144,45 +145,58 @@ public class UDPReceiver extends Thread {
 
 			     	 //*Si le mode est redirection seulement
 					if(RedirectionSeulement){
+						//TODO to test
 					    //*Rediriger le paquet vers le serveur DNS
+						UDPSender sender = new UDPSender(receivePacket,SERVER_DNS,port);
+						sender.SendPacketNow();
 					}
 					else{
-						for(int i=0; i<message.getQuestions().size(); i++){
-					    	//*Rechercher l'adresse IP associe au Query Domain name dans le fichier de 
-						    //*correspondance de ce serveur
-							QueryFinder queryFinder = new QueryFinder(DNSFile);
+				    	//*Rechercher l'adresse IP associe au Query Domain name dans le fichier de 
+					    //*correspondance de ce serveur
+						QueryFinder queryFinder = new QueryFinder(DNSFile);
+						String result = queryFinder.StartResearch(message.getQuestions().get(0).getName());
+					    //*Si la correspondance n'est pas trouvee
+						if( result != "none")
+						{
+							//TODO to test
+						     //*Rediriger le paquet vers le serveur DNS
+							UDPSender sender = new UDPSender(receivePacket, SERVER_DNS,port);
+							sender.SendPacketNow();
+						}
+						else{
+							//TODO to test, I'm not sure for this part...
 							
-						    //*Si la correspondance n'est pas trouvee
-							if(queryFinder.StartResearch(message.getQuestions().get(i).getName()) != "none")
-							{
-								//TODO
-							     //*Rediriger le paquet vers le serveur DNS
-								//UDPSender sender = new UDP;
-							}
-							else{
+				             //*Creer le paquet de reponse a l'aide du UDPAnswerPaquetCreator
+							UDPAnswerPacketCreator packetCreator = new UDPAnswerPacketCreator();
+							byte [] packetBuffer = packetCreator.CreateAnswerPacket(buffer, result);
+							DatagramPacket responsePacket = new DatagramPacket(packetBuffer,packetBuffer.length);
 							
-					             //*Creer le paquet de reponse a l'aide du UDPAnswerPaquetCreator
-								UDPAnswerPacketCreator packetCreator = new UDPAnswerPacketCreator();
-								packetCreator.CreateAnswerPacket(buffer, message.getQuestions().get(i).getName());
-								
-								//TODO
-						   	     //*Placer ce paquet dans le socket
-								//TODO
-							     //*Envoyer le paquet
-							}
+					   	     //*Placer ce paquet dans le socket
+						     //*Envoyer le paquet
+							receiveSocket.send(responsePacket);
 						}
 					}
 				}
 				//******  Dans le cas d'un paquet reponse *****
 				else{
+					String ip = "";
 					
-					//*Ajouter la ou les correspondance(s) dans le fichier DNS si elles ne y sont pas d�j�
-					AnswerRecorder answerRecorder = new AnswerRecorder(DNSFile);
-					answerRecorder.StartRecord(message.getQuestions().get(0).getName(), message.getAnswers().get(0).getAddress());
+					for(Answer ans:message.getAnswers()){
+						//*Ajouter la ou les correspondance(s) dans le fichier DNS si elles ne y sont pas d�j�
+						AnswerRecorder answerRecorder = new AnswerRecorder(DNSFile);
+						ip= ans.getAddress();
+						answerRecorder.StartRecord(message.getQuestions().get(0).getName(), ip);
+					}
 					
-					//TODO
+					//TODO to test, I'm not sure for this part...
 					//*Faire parvenir le paquet reponse au demandeur original, ayant emis une requete 
 					//*avec cet identifiant	
+					
+					UDPAnswerPacketCreator packetCreator = new UDPAnswerPacketCreator();
+					byte [] packetBuffer = packetCreator.CreateAnswerPacket(buffer, ip);
+					DatagramPacket responsePacket = new DatagramPacket(packetBuffer,packetBuffer.length);
+					receiveSocket.send(responsePacket);
+					
 				}
 			}
 		}catch(Exception e){
