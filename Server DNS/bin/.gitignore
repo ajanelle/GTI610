@@ -4,5 +4,5 @@
 /UDPAnswerPacketCreator.class
 /UDPReceiver.class
 /UDPSender.class
-/Message.class
 /message/
+/ClientTest.class

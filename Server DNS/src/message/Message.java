@@ -43,8 +43,9 @@ public class Message {
 				for(int j=0; j<rdLenght; j++){
 					rdData[j] = message.readUnsignedByte();
 				}
-				
-				answers.add(new Answer(rdData));
+				if(rdData.length == 4){
+					answers.add(new Answer(rdData));
+				}
 				
 			}
 			
