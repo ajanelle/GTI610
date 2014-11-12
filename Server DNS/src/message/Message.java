@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class Message {
 	private Header header;
-	private ArrayList<Question> questions;
-	private ArrayList<Answer> answers;
+	private ArrayList<Question> questions = new ArrayList<Question>();
+	private ArrayList<Answer> answers = new ArrayList<Answer>();
 	
 	public Message(DataInputStream message)
 	{
@@ -31,7 +31,7 @@ public class Message {
 			}
 			
 			//create the answers
-			for(int i=0; i<nbQuestion;i++){
+			for(int i=0; i<nbAnswer;i++){
 				message.readUnsignedShort(); //remove the name
 				message.readUnsignedShort(); //remove the type
 				message.readUnsignedShort(); //remove the class

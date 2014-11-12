@@ -141,13 +141,14 @@ public class UDPReceiver extends Thread {
 				
 
 				//******  Dans le cas d'un paquet requ�te *****
-				if(message.getHeader().getQR() == 0){
+				if(message.getHeader().getQR() >= 0){
 
 			     	 //*Si le mode est redirection seulement
 					if(RedirectionSeulement){
 						//TODO to test
 					    //*Rediriger le paquet vers le serveur DNS
-						UDPSender sender = new UDPSender(receivePacket,SERVER_DNS,port);
+						UDPSender sender = new UDPSender(receivePacket,SERVER_DNS,53);
+						sender.setSocket(receiveSocket);
 						sender.SendPacketNow();
 					}
 					else{
@@ -156,11 +157,12 @@ public class UDPReceiver extends Thread {
 						QueryFinder queryFinder = new QueryFinder(DNSFile);
 						String result = queryFinder.StartResearch(message.getQuestions().get(0).getName());
 					    //*Si la correspondance n'est pas trouvee
-						if( result != "none")
+						if( result == "none")
 						{
 							//TODO to test
 						     //*Rediriger le paquet vers le serveur DNS
-							UDPSender sender = new UDPSender(receivePacket, SERVER_DNS,port);
+							UDPSender sender = new UDPSender(receivePacket, SERVER_DNS,53);
+							sender.setSocket(receiveSocket);
 							sender.SendPacketNow();
 						}
 						else{
