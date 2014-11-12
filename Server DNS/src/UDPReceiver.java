@@ -76,6 +76,7 @@ public class UDPReceiver extends Thread {
 	private boolean RedirectionSeulement = false;
 	private String adresseIP = null;
 	private DatagramSocket receiveSocket;
+	private SocketAddress askerIP;
 	
 	public void setport(int p) {
 		this.port = p;
@@ -133,12 +134,13 @@ public class UDPReceiver extends Thread {
 				DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
 				receiveSocket.receive(receivePacket);
 				
+				askerIP = receivePacket.getSocketAddress();
+				
 				//*Creation d'un DataInputStream ou ByteArrayInputStream pour manipuler les bytes du paquet	
 				DataInputStream input = new DataInputStream(new ByteArrayInputStream(buffer));
 
 				//create a message object with the input stream to make it easier to read
 				Message message = new Message(input);
-				
 
 				//******  Dans le cas d'un paquet requ�te *****
 				if(message.getHeader().getQR() >= 0){
@@ -175,6 +177,7 @@ public class UDPReceiver extends Thread {
 							
 					   	     //*Placer ce paquet dans le socket
 						     //*Envoyer le paquet
+							responsePacket.setSocketAddress(askerIP);
 							receiveSocket.send(responsePacket);
 						}
 					}
@@ -197,6 +200,8 @@ public class UDPReceiver extends Thread {
 					UDPAnswerPacketCreator packetCreator = new UDPAnswerPacketCreator();
 					byte [] packetBuffer = packetCreator.CreateAnswerPacket(buffer, ip);
 					DatagramPacket responsePacket = new DatagramPacket(packetBuffer,packetBuffer.length);
+					
+					responsePacket.setSocketAddress(askerIP);
 					receiveSocket.send(responsePacket);
 					
 				}
