@@ -147,7 +147,6 @@ public class UDPReceiver extends Thread {
 
 			     	 //*Si le mode est redirection seulement
 					if(RedirectionSeulement){
-						//TODO to test
 					    //*Rediriger le paquet vers le serveur DNS
 						UDPSender sender = new UDPSender(receivePacket,SERVER_DNS,53);
 						sender.setSocket(receiveSocket);
@@ -161,14 +160,12 @@ public class UDPReceiver extends Thread {
 					    //*Si la correspondance n'est pas trouvee
 						if( result == "none")
 						{
-							//TODO to test
 						     //*Rediriger le paquet vers le serveur DNS
 							UDPSender sender = new UDPSender(receivePacket, SERVER_DNS,53);
 							sender.setSocket(receiveSocket);
 							sender.SendPacketNow();
 						}
 						else{
-							//TODO to test, I'm not sure for this part...
 							
 				             //*Creer le paquet de reponse a l'aide du UDPAnswerPaquetCreator
 							UDPAnswerPacketCreator packetCreator = new UDPAnswerPacketCreator();
@@ -193,7 +190,6 @@ public class UDPReceiver extends Thread {
 						answerRecorder.StartRecord(message.getQuestions().get(0).getName(), ip);
 					}
 					
-					//TODO to test, I'm not sure for this part...
 					//*Faire parvenir le paquet reponse au demandeur original, ayant emis une requete 
 					//*avec cet identifiant	
 					
